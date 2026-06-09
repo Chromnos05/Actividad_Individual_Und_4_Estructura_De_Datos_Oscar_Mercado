@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import plataforma.arboles.ArbolCategorias;
 
 /**
  * Punto de entrada principal de la Plataforma de Empleo.
@@ -6,6 +7,8 @@ import java.util.Scanner;
  * basada en Arboles (categorias) o en Grafos (candidatos-ofertas).
  */
 public class main {
+
+    private static ArbolCategorias arbol = new ArbolCategorias();
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
@@ -31,7 +34,6 @@ public class main {
 
     /**
      * Menu para operaciones del Arbol de Categorias.
-     * Implementado en rama-arbol-plataforma.
      */
     private static void menuArbol(Scanner sc) {
         int sub;
@@ -50,13 +52,49 @@ public class main {
             sub = sc.nextInt();
             sc.nextLine();
             switch (sub) {
-                case 1 -> System.out.println("[Pendiente] Agregar categoria");
-                case 2 -> System.out.println("[Pendiente] Buscar categoria");
-                case 3 -> System.out.println("[Pendiente] Renombrar categoria");
-                case 4 -> System.out.println("[Pendiente] Eliminar categoria");
-                case 5 -> System.out.println("[Pendiente] Asociar oferta");
-                case 6 -> System.out.println("[Pendiente] Mostrar jerarquia");
-                case 7 -> System.out.println("[Pendiente] Listar categorias");
+                case 1 -> {
+                    System.out.print("Nombre de la categoria padre: ");
+                    String padre = sc.nextLine();
+                    System.out.print("Nombre de la nueva categoria: ");
+                    String hijo = sc.nextLine();
+                    boolean ok = arbol.agregarCategoria(padre, hijo);
+                    System.out.println(ok ? "Categoria agregada." : "Error: padre no existe o hijo duplicado.");
+                }
+                case 2 -> {
+                    System.out.print("Nombre de la categoria a buscar: ");
+                    String nombre = sc.nextLine();
+                    var cat = arbol.buscarCategoria(nombre);
+                    System.out.println(cat != null ? "Categoria encontrada: " + cat.getNombre() : "Categoria no encontrada.");
+                }
+                case 3 -> {
+                    System.out.print("Nombre actual de la categoria: ");
+                    String viejo = sc.nextLine();
+                    System.out.print("Nombre nuevo: ");
+                    String nuevo = sc.nextLine();
+                    boolean ok = arbol.renombrarCategoria(viejo, nuevo);
+                    System.out.println(ok ? "Categoria renombrada." : "Error: no existe o el nuevo nombre ya esta en uso.");
+                }
+                case 4 -> {
+                    System.out.print("Nombre de la categoria a eliminar: ");
+                    String nombre = sc.nextLine();
+                    boolean ok = arbol.eliminarCategoria(nombre);
+                    System.out.println(ok ? "Categoria eliminada." : "Error: no existe o tiene subcategorias.");
+                }
+                case 5 -> {
+                    System.out.print("Nombre de la categoria: ");
+                    String cat = sc.nextLine();
+                    System.out.print("Nombre de la oferta: ");
+                    String oferta = sc.nextLine();
+                    boolean ok = arbol.agregarOferta(cat, oferta);
+                    System.out.println(ok ? "Oferta asociada a la categoria." : "Error: categoria no encontrada.");
+                }
+                case 6 -> {
+                    System.out.println("Jerarquia de categorias:");
+                    System.out.println(arbol.listarPreorden());
+                }
+                case 7 -> {
+                    System.out.println("Categorias ordenadas: " + arbol.listarInorden());
+                }
                 case 8 -> { }
                 default -> System.out.println("Opcion no valida.");
             }
