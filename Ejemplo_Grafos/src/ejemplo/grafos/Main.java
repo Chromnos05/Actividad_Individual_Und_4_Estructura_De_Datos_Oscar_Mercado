@@ -1,8 +1,21 @@
 package ejemplo.grafos;
 
+/**
+ * Clase principal que demuestra el funcionamiento del Grafo
+ * con todas sus operaciones: insercion de vertices y aristas,
+ * consulta, modificacion, eliminacion y recorridos BFS y DFS.
+ */
 public class Main {
 
+    /**
+     * Punto de entrada del programa.
+     * Crea un grafo, ejecuta cada operacion y muestra
+     * los resultados por consola.
+     *
+     * @param args argumentos de linea de comandos (no utilizados)
+     */
     public static void main(String[] args) {
+        // Crear un grafo vacio
         Grafo grafo = new Grafo();
 
         System.out.println("=== EJEMPLO DE GRAFO ===");
@@ -17,7 +30,7 @@ public class Main {
         }
         System.out.println();
 
-        // Crear aristas
+        // Crear aristas entre los vertices
         System.out.println("--- Insercion de aristas ---");
         grafo.agregarArista("A", "B", 5);
         grafo.agregarArista("A", "C", 3);
@@ -27,24 +40,24 @@ public class Main {
         System.out.println("Aristas agregadas: A-B(5), A-C(3), B-D(2), C-D(7), D-E(4)");
         System.out.println();
 
-        // Mostrar grafo
+        // Mostrar estado actual del grafo
         System.out.println("--- Estado del grafo ---");
         grafo.mostrarGrafo();
         System.out.println();
 
-        // Recorridos
+        // Recorridos BFS y DFS
         System.out.println("--- Recorridos desde A ---");
         System.out.println("BFS: " + grafo.bfs("A"));
         System.out.println("DFS: " + grafo.dfs("A"));
         System.out.println();
 
-        // Consulta
+        // Consulta de vertices
         System.out.println("--- Consulta ---");
         System.out.println("Existe vertice A? " + grafo.consultarVertice("A"));
         System.out.println("Existe vertice F? " + grafo.consultarVertice("F"));
         System.out.println();
 
-        // Modificacion
+        // Modificacion (renombrar vertice)
         System.out.println("--- Modificacion ---");
         System.out.println("Renombrar A por X: " + grafo.modificarVertice("A", "X"));
         System.out.println("Grafo despues de renombrar:");
@@ -52,13 +65,13 @@ public class Main {
         System.out.println("Recorrido BFS desde X: " + grafo.bfs("X"));
         System.out.println();
 
-        // Eliminacion de arista
+        // Eliminacion de una arista especifica
         System.out.println("--- Eliminacion de arista ---");
         System.out.println("Eliminar arista X-C: " + grafo.eliminarArista("X", "C"));
         grafo.mostrarGrafo();
         System.out.println();
 
-        // Eliminacion de vertice
+        // Eliminacion de un vertice completo
         System.out.println("--- Eliminacion de vertice ---");
         System.out.println("Eliminar vertice E: " + grafo.eliminarVertice("E"));
         grafo.mostrarGrafo();
