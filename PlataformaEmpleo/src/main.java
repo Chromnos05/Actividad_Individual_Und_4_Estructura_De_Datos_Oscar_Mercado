@@ -44,6 +44,8 @@ public class main {
         do {
             System.out.println();
             System.out.println("--- ARBOL DE CATEGORIAS ---");
+            System.out.println("Categorias actuales: " + arbol.listarInorden());
+            System.out.println();
             System.out.println("1. Agregar categoria");
             System.out.println("2. Buscar categoria");
             System.out.println("3. Renombrar categoria");
@@ -57,8 +59,11 @@ public class main {
             sc.nextLine();
             switch (sub) {
                 case 1 -> {
-                    System.out.print("Nombre de la categoria padre: ");
+                    System.out.print("Nombre de la categoria padre (deje vacio para raiz): ");
                     String padre = sc.nextLine();
+                    if (padre.trim().isEmpty()) {
+                        padre = "Categorias";
+                    }
                     System.out.print("Nombre de la nueva categoria: ");
                     String hijo = sc.nextLine();
                     boolean ok = arbol.agregarCategoria(padre, hijo);
