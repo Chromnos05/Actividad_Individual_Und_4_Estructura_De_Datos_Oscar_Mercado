@@ -1,5 +1,8 @@
 import java.util.Scanner;
+import java.util.Arrays;
+import java.util.List;
 import plataforma.arboles.ArbolCategorias;
+import plataforma.grafos.GrafoPlataforma;
 
 /**
  * Punto de entrada principal de la Plataforma de Empleo.
@@ -9,6 +12,7 @@ import plataforma.arboles.ArbolCategorias;
 public class main {
 
     private static ArbolCategorias arbol = new ArbolCategorias();
+    private static GrafoPlataforma grafo = new GrafoPlataforma();
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
@@ -103,7 +107,6 @@ public class main {
 
     /**
      * Menu para operaciones del Grafo Candidatos-Ofertas.
-     * Implementado en rama-grafo-plataforma.
      */
     private static void menuGrafo(Scanner sc) {
         int sub;
@@ -118,22 +121,131 @@ public class main {
             System.out.println("6. Eliminar candidato / oferta");
             System.out.println("7. Recomendar por BFS");
             System.out.println("8. Recomendar por DFS");
-            System.out.println("9. Volver al menu principal");
+            System.out.println("9. Mostrar grafo completo");
+            System.out.println("10. Volver al menu principal");
             System.out.print("Seleccione una opcion: ");
             sub = sc.nextInt();
             sc.nextLine();
             switch (sub) {
-                case 1 -> System.out.println("[Pendiente] Agregar candidato");
-                case 2 -> System.out.println("[Pendiente] Agregar oferta");
-                case 3 -> System.out.println("[Pendiente] Postular candidato");
-                case 4 -> System.out.println("[Pendiente] Buscar");
-                case 5 -> System.out.println("[Pendiente] Modificar");
-                case 6 -> System.out.println("[Pendiente] Eliminar");
-                case 7 -> System.out.println("[Pendiente] Recomendar BFS");
-                case 8 -> System.out.println("[Pendiente] Recomendar DFS");
-                case 9 -> { }
+                case 1 -> {
+                    System.out.print("Nombre del candidato: ");
+                    String nombre = sc.nextLine();
+                    System.out.print("Habilidades (separadas por coma): ");
+                    List<String> habilidades = Arrays.asList(sc.nextLine().split(",\s*"));
+                    boolean ok = grafo.agregarCandidato(nombre, habilidades);
+                    System.out.println(ok ? "Candidato agregado." : "Error: el nombre ya existe.");
+                }
+                case 2 -> {
+                    System.out.print("Titulo de la oferta: ");
+                    String titulo = sc.nextLine();
+                    System.out.print("Categoria: ");
+                    String categoria = sc.nextLine();
+                    System.out.print("Requisitos (separados por coma): ");
+                    List<String> requisitos = Arrays.asList(sc.nextLine().split(",\s*"));
+                    boolean ok = grafo.agregarOferta(titulo, categoria, requisitos);
+                    System.out.println(ok ? "Oferta agregada." : "Error: el titulo ya existe.");
+                }
+                case 3 -> {
+                    System.out.print("Nombre del candidato: ");
+                    String cand = sc.nextLine();
+                    System.out.print("Titulo de la oferta: ");
+                    String ofer = sc.nextLine();
+                    boolean ok = grafo.postular(cand, ofer);
+                    System.out.println(ok ? "Postulacion registrada." : "Error: candidato u oferta no existen.");
+                }
+                case 4 -> {
+                    System.out.print("Buscar (C para candidato, O para oferta): ");
+                    String tipo = sc.nextLine();
+                    System.out.print("Nombre: ");
+                    String nom = sc.nextLine();
+                    if (tipo.equalsIgnoreCase("C")) {
+                        var c = grafo.buscarCandidato(nom);
+                        if (c != null) {
+                            System.out.println("Candidato: " + c.getNombre()
+                                + " | Habilidades: " + c.getHabilidades());
+                        } else {
+                            System.out.println("Candidato no encontrado.");
+                        }
+                    } else {
+                        var o = grafo.buscarOferta(nom);
+                        if (o != null) {
+                            System.out.println("Oferta: " + o.getTitulo()
+                                + " | Categoria: " + o.getCategoria()
+                                + " | Requisitos: " + o.getRequisitos());
+                        } else {
+                            System.out.println("Oferta no encontrada.");
+                        }
+                    }
+                }
+                case 5 -> {
+                    System.out.print("Modificar (C para candidato, O para oferta): ");
+                    String tipo = sc.nextLine();
+                    System.out.print("Nombre actual: ");
+                    String viejo = sc.nextLine();
+                    System.out.print("Nombre nuevo: ");
+                    String nuevo = sc.nextLine();
+                    if (tipo.equalsIgnoreCase("C")) {
+                        System.out.print("Nuevas habilidades (separadas por coma): ");
+                        List<String> habs = Arrays.asList(sc.nextLine().split(",\s*"));
+                        boolean ok = grafo.modificarCandidato(viejo, nuevo, habs);
+                        System.out.println(ok ? "Candidato modificado." : "Error en la modificacion.");
+                    } else {
+                        System.out.print("Nueva categoria: ");
+                        String cat = sc.nextLine();
+                        System.out.print("Nuevos requisitos (separados por coma): ");
+                        List<String> reqs = Arrays.asList(sc.nextLine().split(",\s*"));
+                        boolean ok = grafo.modificarOferta(viejo, nuevo, cat, reqs);
+                        System.out.println(ok ? "Oferta modificada." : "Error en la modificacion.");
+                    }
+                }
+                case 6 -> {
+                    System.out.print("Eliminar (C para candidato, O para oferta): ");
+                    String tipo = sc.nextLine();
+                    System.out.print("Nombre: ");
+                    String nom = sc.nextLine();
+                    boolean ok;
+                    if (tipo.equalsIgnoreCase("C")) {
+                        ok = grafo.eliminarCandidato(nom);
+                    } else {
+                        ok = grafo.eliminarOferta(nom);
+                    }
+                    System.out.println(ok ? "Eliminado correctamente." : "Error: no existe.");
+                }
+                case 7 -> {
+                    System.out.print("Nombre del candidato: ");
+                    String nom = sc.nextLine();
+                    List<String> rec = grafo.recomendarBFS(nom);
+                    if (rec.isEmpty()) {
+                        System.out.println("No hay recomendaciones.");
+                    } else {
+                        System.out.println("Recomendaciones (BFS):");
+                        for (String r : rec) {
+                            System.out.println("  " + r);
+                        }
+                    }
+                }
+                case 8 -> {
+                    System.out.print("Nombre del nodo inicial: ");
+                    String nom = sc.nextLine();
+                    List<String> rec = grafo.recomendarDFS(nom);
+                    if (rec.isEmpty()) {
+                        System.out.println("Nodo no encontrado.");
+                    } else {
+                        System.out.println("Recomendaciones (DFS):");
+                        for (String r : rec) {
+                            System.out.println("  " + r);
+                        }
+                    }
+                }
+                case 9 -> {
+                    System.out.println("Candidatos: " + grafo.listarCandidatos());
+                    System.out.println("Ofertas: " + grafo.listarOfertas());
+                    System.out.println("Conexiones:");
+                    grafo.mostrarGrafo();
+                }
+                case 10 -> { }
                 default -> System.out.println("Opcion no valida.");
             }
-        } while (sub != 9);
+        } while (sub != 10);
     }
 }
